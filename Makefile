@@ -19,7 +19,7 @@ build: ## build the binary
 
 .PHONY: setup
 setup: ## setup the local environment by installing required tools
-	@echo "$(OK_COLOR)==> Setting up local environment$(NO_COLOR)"
+	@echo "$(OK_COLOR)==> Setting up local development environment$(NO_COLOR)"
 	go get -u github.com/cespare/reflex
 
 .PHONY: run.local
@@ -36,16 +36,6 @@ run.tests: ## runs tests
 run.benchmarks: ## runs benchmarks only (no tests!)
 	@echo "$(OK_COLOR)==> Running benchmarks $(NO_COLOR)"
 	cd model && go test -run=XXX -bench=.
-
-.PHONY: docker.start
-docker.start: ## build and start docker environment
-	@echo "$(OK_COLOR)==> Start local docker environment $(NO_COLOR)"
-	docker-compose up -d --build
-
-.PHONY: docker.stop
-docker.stop: ## stop docker environment
-	@echo "$(OK_COLOR)==> Stop local docker environment $(NO_COLOR)"
-	docker kill campaigner.redis
 
 .PHONY: help
 help:
