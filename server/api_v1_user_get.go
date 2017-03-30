@@ -8,11 +8,16 @@ import (
 )
 
 func (s *Server) ApiV1UserGet(w http.ResponseWriter, r *http.Request) {
-	s.env.UserCounter = s.env.UserCounter + 1
+	if r.Method != "GET" {
+		s.SendError(w, httperror.HttpErrInvalidMethod)
+		return
+	}
+
+	s.env.UserCounter++
 	user, err := model.NewUser(s.env.UserCounter)
 
 	if err != nil {
-		s.SendError(w, httperror.NewHttpErrorGenerateCampaignFailed(err))
+		s.SendError(w, httperror.NewHttpErrorGenerateUserFailed(err))
 		return
 	}
 

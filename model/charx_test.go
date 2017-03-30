@@ -6,30 +6,18 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetCharByIndexPanic(t *testing.T) {
-	//Act
-	_, err := getCharByIndex(-1)
-
-	//Assert
-	assert := assert.New(t)
-	assert.Error(err, ErrCharIndexOutOfRange.Error())
-}
-
 func TestGetCharByIndex(t *testing.T) {
 	//Arrange
 	testCases := []struct {
-		paramIndex   int64
-		expectedChar string
+		paramIndex    int64
+		expectedChar  string
+		expectedError error
 	}{
-		{1, "A"},
-		{4, "D"},
-		{26, "Z"},
-		{27, "A"},
-		{52, "Z"},
-		{77, "Y"},
-		{78, "Z"},
-		{208, "Z"},
-		{210, "B"},
+		{-1, "", ErrCharIndexOutOfRange},
+		{1, "A", nil},
+		{4, "D", nil},
+		{26, "Z", nil},
+		{27, "", ErrCharIndexOutOfRange},
 	}
 
 	for _, tc := range testCases {
@@ -38,7 +26,14 @@ func TestGetCharByIndex(t *testing.T) {
 
 		//Assert
 		assert := assert.New(t)
-		assert.NoError(err)
-		assert.Equal(tc.expectedChar, actualResult)
+
+		if tc.expectedError != nil {
+			assert.Error(err, tc.expectedError.Error())
+			assert.Equal(tc.expectedChar, actualResult)
+		} else {
+			assert.NoError(err)
+			assert.Equal(tc.expectedChar, actualResult)
+		}
+
 	}
 }

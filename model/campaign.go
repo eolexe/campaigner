@@ -2,7 +2,7 @@ package model
 
 import (
 	"errors"
-	"fmt"
+	"strconv"
 )
 
 var (
@@ -10,9 +10,9 @@ var (
 )
 
 type Campaign struct {
-	CampaignName string  `json:"campaign_name"`
-	Price        float64 `json:"price"`
-	Targets      Targets `json:"target_list"`
+	Name    string  `json:"campaign_name"`
+	Price   float64 `json:"price"`
+	Targets Targets `json:"target_list"`
 }
 
 type Campaigns []*Campaign
@@ -38,17 +38,19 @@ func NewCampaign(index int64, numberOfTargets int64, numberOfTargetAttributes in
 		return nil, ErrCampaingIndexOutOfRange
 	}
 
-	price := float64(Randomizer.Int63n(10000)) * 0.01
-
-	targets, err := NewTargets(numberOfTargets, numberOfTargetAttributes)
+	targets, err := newTargets(numberOfTargets, numberOfTargetAttributes)
 
 	if err != nil {
 		return nil, err
 	}
 
+	RndMutex.Lock()
+	price := float64(Rnd.Int63n(10000)) * 0.01
+	RndMutex.Unlock()
+
 	return &Campaign{
-		CampaignName: fmt.Sprintf("campaign%d", index),
-		Price:        price,
-		Targets:      targets,
+		Name:    "campaign" + strconv.FormatInt(index, 10),
+		Price:   price,
+		Targets: targets,
 	}, nil
 }

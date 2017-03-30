@@ -27,6 +27,16 @@ run.local: ## runs application locally
 	@echo "$(OK_COLOR)==> Running campaigner service locally $(NO_COLOR)"
 	ulimit -S -n 5000 && reflex -r '\.(go|json|yml)$$' -R '^vendor/' -s -- sh -c 'go build ${LDFLAGS} -o ${BINARY} cmd/server/main.go && ./${BINARY}'
 
+.PHONY: run.tests
+run.tests: ## runs tests
+	@echo "$(OK_COLOR)==> Running tests $(NO_COLOR)"
+	cd model && go test
+
+.PHONY: run.benchmarks
+run.benchmarks: ## runs benchmarks only (no tests!)
+	@echo "$(OK_COLOR)==> Running benchmarks $(NO_COLOR)"
+	cd model && go test -run=XXX -bench=.
+
 .PHONY: docker.start
 docker.start: ## build and start docker environment
 	@echo "$(OK_COLOR)==> Start local docker environment $(NO_COLOR)"

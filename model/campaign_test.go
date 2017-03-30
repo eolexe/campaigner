@@ -16,8 +16,49 @@ func (r *RandomizerMock) Int63n(n int64) int64 {
 	return n
 }
 
+var (
+	testImportCampaignsData Campaigns
+)
+
 func TestMain(m *testing.M) {
-	Randomizer = &RandomizerMock{}
+	Rnd = &RandomizerMock{}
+	testImportCampaignsData = Campaigns{
+		&Campaign{
+			Name:  "campaign1",
+			Price: 0.25,
+			Targets: []*Target{
+				{
+					Target:     "attr_A",
+					Attributes: MustTargetAttributes(10, "A"),
+				},
+				{
+					Target:     "attr_B",
+					Attributes: MustTargetAttributes(17, "B"),
+				},
+			},
+		},
+		&Campaign{
+			Name:  "campaign2",
+			Price: 0.35,
+			Targets: []*Target{
+				{
+					Target:     "attr_A",
+					Attributes: MustTargetAttributes(20, "A"),
+				},
+			},
+		},
+		&Campaign{
+			Name:  "campaign3",
+			Price: 1.35,
+			Targets: []*Target{
+				{
+					Target:     "attr_A",
+					Attributes: MustTargetAttributes(3, "A"),
+				},
+			},
+		},
+	}
+
 	code := m.Run()
 	os.Exit(code)
 }
@@ -52,7 +93,7 @@ func TestNewCampaign(t *testing.T) {
 	//Assert
 	assert := assert.New(t)
 	assert.NoError(err)
-	assert.Equal(actualResult.CampaignName, expectedCampaignName)
+	assert.Equal(actualResult.Name, expectedCampaignName)
 	assert.Len(actualResult.Targets, expectedNumberOfTargets)
 	assert.Equal(actualResult.Targets[1].Target, expectedTargetName)
 	assert.Len(actualResult.Targets[1].Attributes, expectedNumberOfTargetsAttributes)

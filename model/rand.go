@@ -2,11 +2,13 @@ package model
 
 import (
 	"math/rand"
+	"sync"
 	"time"
 )
 
 var (
-	Randomizer randomizer = rand.New(rand.NewSource(time.Now().Unix()))
+	Rnd      randomizer = rand.New(rand.NewSource(time.Now().UnixNano()))
+	RndMutex            = &sync.Mutex{}
 )
 
 type randomizer interface {

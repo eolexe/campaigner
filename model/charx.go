@@ -11,11 +11,5 @@ func getCharByIndex(i int64) (string, error) {
 		return "", ErrCharIndexOutOfRange
 	}
 
-	//a := math.Mod(float64(i), float64(26))
-	//i = int64(a)
-	//if i == 0 {
-	//	i = 26
-	//}
-
 	return alphabet[i-1 : i], nil
 }

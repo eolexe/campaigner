@@ -19,12 +19,18 @@ func NewUser(counter int64) (*User, error) {
 		profileLength = 26
 	}
 
+	//pretty.Println("=============    (╯°□°）╯︵ ┻━┻)   =============")
+	//pretty.Println(profileLength)
+	//pretty.Println("=============    ┬─┬ノ( º _ ºノ)   =============")
+
 	for i := int64(1); i <= profileLength; i++ {
 		char, err := getCharByIndex(i)
 		if err != nil {
 			return nil, err
 		}
-		profile["attr_"+char] = char + strconv.FormatInt(Randomizer.Int63n(200), 10)
+		RndMutex.Lock()
+		profile["attr_"+char] = char + strconv.FormatInt(Rnd.Int63n(200), 10)
+		RndMutex.Unlock()
 	}
 
 	user := &User{

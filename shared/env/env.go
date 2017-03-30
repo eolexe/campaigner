@@ -1,15 +1,18 @@
 package env
 
 import (
+	"github.com/eolexe/campaigner/model"
 	"github.com/eolexe/campaigner/shared/config"
 	"github.com/satori/go.uuid"
 )
 
 type Environment struct {
-	Version     string
-	Config      config.Config
-	UserCounter int64
-	IsDebug     bool
+	Version                 string
+	Config                  config.Config
+	UserCounter             int64
+	InMemorySortedCampaigns model.CampaignsSortedList
+	SearchCounter           int64
+	IsDebug                 bool
 }
 
 func (e *Environment) PopUserCounter() {

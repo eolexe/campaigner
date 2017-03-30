@@ -33,6 +33,9 @@ func (s *Server) Run() error {
 	mux.HandleFunc("/health", s.ApiHealth)
 	mux.HandleFunc("/campaign", s.ApiV1CampaignsGet)
 	mux.HandleFunc("/user", s.ApiV1UserGet)
+	mux.HandleFunc("/import_camp", s.ApiV1CampaignsImportPost)
+	mux.HandleFunc("/search", s.ApiV1CampaignSearchPost)
+	mux.HandleFunc("/search_auto", s.ApiV1CampaignSearchAutoGet)
 
 	return http.ListenAndServe(
 		s.env.Config.Server.String(),
@@ -57,6 +60,7 @@ func (s *Server) JSON(w http.ResponseWriter, code int, i interface{}) error {
 }
 
 func (s *Server) SendError(w http.ResponseWriter, err *httperror.HttpError) error {
+	w.Header().Set("X-Content-Type-Options", "nosniff")
 	return s.JSON(w, err.StatusCode, payload.ResponseHttpErrors{[]*httperror.HttpError{err}})
 }
 

@@ -17,14 +17,16 @@ type Target struct {
 
 type Targets []*Target
 
-func NewTargets(numberOfTargets int64, numberOfTargetAttributes int64) (Targets, error) {
+func newTargets(numberOfTargets int64, numberOfTargetAttributes int64) (Targets, error) {
 	if 26 < numberOfTargets || numberOfTargets < 0 {
 		return nil, ErrTargetsOutOfRange
 	}
 
 	targetList := Targets{}
 
-	numberOfTargets = Randomizer.Int63n(numberOfTargets)
+	RndMutex.Lock()
+	numberOfTargets = Rnd.Int63n(numberOfTargets)
+	RndMutex.Unlock()
 
 	for i := int64(1); i <= numberOfTargets; i++ {
 		char, err := getCharByIndex(i)
@@ -32,7 +34,7 @@ func NewTargets(numberOfTargets int64, numberOfTargetAttributes int64) (Targets,
 			return nil, err
 		}
 
-		targetAttributes, err := NewTargetAttributes(numberOfTargetAttributes, char)
+		targetAttributes, err := newTargetAttributes(numberOfTargetAttributes, char)
 
 		if err != nil {
 			return nil, err
@@ -48,14 +50,25 @@ func NewTargets(numberOfTargets int64, numberOfTargetAttributes int64) (Targets,
 	return targetList, nil
 }
 
-func NewTargetAttributes(numberOfTargetAttributes int64, prefix string) ([]string, error) {
+func MustTargetAttributes(numberOfTargetAttributes int64, prefix string) []string {
+	result, err := newTargetAttributes(numberOfTargetAttributes, prefix)
+	if err != nil {
+		panic(err)
+	}
+
+	return result
+}
+
+func newTargetAttributes(numberOfTargetAttributes int64, prefix string) ([]string, error) {
 	if 100 < numberOfTargetAttributes || numberOfTargetAttributes < 0 {
 		return nil, ErrTargetsAttributesOutOfRange
 	}
 
 	var targetAttributes []string
 
-	numberOfTargetAttributes = Randomizer.Int63n(numberOfTargetAttributes)
+	RndMutex.Lock()
+	numberOfTargetAttributes = Rnd.Int63n(numberOfTargetAttributes)
+	RndMutex.Unlock()
 
 	for i := int64(0); i < numberOfTargetAttributes; i++ {
 		targetAttributes = append(targetAttributes, prefix+strconv.FormatInt(int64(i), 10))
